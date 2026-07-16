@@ -1,4 +1,4 @@
-name: Build APK (Self Hosted)
+name: Build Android & iOS (Self Hosted)
 
 on:
   push:
@@ -38,20 +38,34 @@ jobs:
       - name: Run Tests
         run: flutter test
 
-      - name: Build APK
+      # Android
+      - name: Build Android APK
         run: flutter build apk --release
 
-      - name: Upload APK
+      - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
+          name: android-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
+      # iOS
+      - name: Build Development IPA
+        run: flutter build ipa --export-options-plist=ExportOptions.plist
+
+      - name: Upload iOS IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-development-ipa
+          path: build/ios/ipa/*.ipa
+
+      # GitHub Release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.${{ github.run_number }}
           name: Release v1.${{ github.run_number }}
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/ios/ipa/*.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
