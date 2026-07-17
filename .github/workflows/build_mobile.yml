@@ -126,6 +126,6 @@ jobs:
           generate_release_notes: true
           files: |
             build/app/outputs/flutter-apk/app-release.apk
-            build/ios/ipa/Runner.ipa
+            build/ios/ipa/*.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
